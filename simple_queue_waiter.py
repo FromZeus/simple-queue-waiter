@@ -118,11 +118,13 @@ def main():
             conf = yaml.load(config)
         ch = Checker(conf["period"], conf["threads"])
         for el in conf["targets"]:
-            ch.add(SimpleChecker(el["host"], el["queue"], el["user"], el["password"]))
+            ch.add(SimpleChecker(el["host"], el["queue"],
+                                 el["user"], el["password"]))
         ch.run()
     except KeyboardInterrupt:
         print('\nThe process was interrupted by the user')
         raise SystemExit
+
 
 if __name__ == "__main__":
     main()
