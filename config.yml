@@ -1,0 +1,5 @@
+period: 10
+threads: 4
+targets:
+  - {host: "localhost", queue: "test1", user: "rabbit", password: "password"}
+  - {host: "localhost", queue: "test2", user: "rabbit", password: "password"}
