@@ -8,8 +8,10 @@ import pika
 
 
 class SimpleChecker(object):
-    def __init__(self, host, queue, user, password):
+    def __init__(self, host, port, virtual_host, queue, user, password):
         self.host = host
+        self.port = port
+        self.virtual_host = virtual_host
         self.queue = queue
         self.user = user
         self.password = password
@@ -60,6 +62,8 @@ class Checker(MutableSequence, object):
         connection = pika.BlockingConnection(
             pika.ConnectionParameters(
                 host=simple.host,
+                port=simple.port,
+                virtual_host=simple.virtual_host,
                 credentials=pika.PlainCredentials(simple.user, simple.password)
             )
         )
@@ -74,6 +78,8 @@ class Checker(MutableSequence, object):
         connection = pika.BlockingConnection(
             pika.ConnectionParameters(
                 host=simple.host,
+                port=simple.port,
+                virtual_host=simple.virtual_host,
                 credentials=pika.PlainCredentials(simple.user, simple.password)
             )
         )
@@ -88,11 +94,13 @@ class Checker(MutableSequence, object):
         connection = pika.BlockingConnection(
             pika.ConnectionParameters(
                 host=simple.host,
+                port=simple.port,
+                virtual_host=simple.virtual_host,
                 credentials=pika.PlainCredentials(simple.user, simple.password)
             )
         )
         channel = connection.channel()
-        channel.queue_declare(queue=simple.queue)
+        # channel.queue_declare(queue=simple.queue, durable=True)
         res = channel.queue_declare(queue=simple.queue, passive=True)
         connection.close()
 
@@ -118,8 +126,8 @@ def main():
             conf = yaml.load(config)
         ch = Checker(conf["period"], conf["threads"])
         for el in conf["targets"]:
-            ch.add(SimpleChecker(el["host"], el["queue"],
-                                 el["user"], el["password"]))
+            ch.add(SimpleChecker(el["host"], el["port"], el["virtual_host"],
+                                 el["queue"], el["user"], el["password"]))
         ch.run()
     except KeyboardInterrupt:
         print('\nThe process was interrupted by the user')

@@ -1,5 +1,5 @@
 period: 10
 threads: 4
 targets:
-  - {host: "localhost", queue: "test1", user: "rabbit", password: "password"}
-  - {host: "localhost", queue: "test2", user: "rabbit", password: "password"}
+  - {host: "localhost", port: 5672, virtual_host: "/", queue: "test1", user: "rabbit", password: "password"}
+  - {host: "localhost", port: 5672, virtual_host: "/", queue: "test2", user: "rabbit", password: "password"}
