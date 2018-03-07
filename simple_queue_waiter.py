@@ -101,7 +101,12 @@ class Checker(MutableSequence, object):
         )
         channel = connection.channel()
         # channel.queue_declare(queue=simple.queue, durable=True)
-        res = channel.queue_declare(queue=simple.queue, passive=True)
+        try:
+            res = channel.queue_declare(queue=simple.queue, passive=True)
+        except:
+            print("Can't connect to queue")
+            connection.close()
+            return []
         connection.close()
 
         return res.method.message_count
