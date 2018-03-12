@@ -58,38 +58,6 @@ class Checker(MutableSequence, object):
         if isinstance(sc, SimpleChecker):
             self.simples.remove(sc)
 
-    def send_task_to_queue(self, simple):
-        connection = pika.BlockingConnection(
-            pika.ConnectionParameters(
-                host=simple.host,
-                port=simple.port,
-                virtual_host=simple.virtual_host,
-                credentials=pika.PlainCredentials(simple.user, simple.password)
-            )
-        )
-        channel = connection.channel()
-        channel.queue_declare(queue=simple.queue)
-        channel.basic_publish(exchange="",
-                              routing_key=simple.queue,
-                              body=str("test"))
-        connection.close()
-
-    def get_task_from_queue(self, simple):
-        connection = pika.BlockingConnection(
-            pika.ConnectionParameters(
-                host=simple.host,
-                port=simple.port,
-                virtual_host=simple.virtual_host,
-                credentials=pika.PlainCredentials(simple.user, simple.password)
-            )
-        )
-        channel = connection.channel()
-        channel.queue_declare(queue=simple.queue)
-        res = channel.basic_get(queue=simple.queue, no_ack=True)
-        connection.close()
-
-        return res
-
     def check(self, simple):
         connection = pika.BlockingConnection(
             pika.ConnectionParameters(
